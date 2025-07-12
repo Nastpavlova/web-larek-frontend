@@ -38,15 +38,6 @@ export class DataModel implements IDataModel {
     return this._productCards;
   }
 
-  /** проверяет, находится ли товар в корзине */
-  isInBasket(item: ProductItem): boolean {
-    if (this.basketModel) {
-      return this.basketModel.isCardInBasket(item);
-    } else {
-      return false;
-    }
-  }
-
   /** устанавливает выбранную карточку товара для модалки */
   setPreview(item: ProductItem) {
     this.selectedCard = item;
