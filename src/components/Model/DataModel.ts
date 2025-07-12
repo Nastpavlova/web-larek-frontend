@@ -3,7 +3,7 @@ import { IEvents } from "../base/events";
 
 export interface IDataModel {
   productCards: ProductItem[];
-  selectedСard: ProductItem;
+  selectedCard: ProductItem;
   setPreview(item: ProductItem): void;
 }
 
@@ -13,7 +13,7 @@ export class DataModel implements IDataModel {
   protected _productCards: ProductItem[];
 
   /** выбранная карточка товара */
-  selectedСard: ProductItem;
+  selectedCard: ProductItem;
 
   constructor(protected events: IEvents) {
     this._productCards = [];
@@ -32,7 +32,7 @@ export class DataModel implements IDataModel {
 
   /** устанавливает выбранную карточку товара для модалки */
   setPreview(item: ProductItem) {
-    this.selectedСard = item;
+    this.selectedCard = item;
     this.events.emit('modalCard:open', item);
   }
 }

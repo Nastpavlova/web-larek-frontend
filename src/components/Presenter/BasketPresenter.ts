@@ -2,6 +2,7 @@ import { EventEmitter } from '../base/events';
 import { BasketModel } from '../Model/BasketModel';
 import { Basket } from '../View/Basket';
 import { BasketItem } from '../View/BasketItem';
+import { BasketOpenButton } from '../View/BasketOpenButton';
 import { ModalWindow } from '../View/ModalWindow';
 import { DataModel } from '../Model/DataModel';
 import { ProductItem } from '../../types';
@@ -11,6 +12,7 @@ export class BasketPresenter {
   constructor(
     private basketModel: BasketModel,
     private basketView: Basket,
+    private basketOpenButton: BasketOpenButton,
     private modal: ModalWindow,
     private dataModel: DataModel,
     private events: EventEmitter,
@@ -24,13 +26,19 @@ export class BasketPresenter {
     this.events.on('card:addBasket', () => this.addToBasket());
     this.events.on('basket:open', () => this.openBasket());
     this.events.on('basket:basketItemRemove', (item: ProductItem) => this.removeItem(item));
+    this.events.on<{count: number}>('basket:change', (data) => this.updateBasketCounter(data.count));
   }
 
   /** добавляет выбранный товар в корзину и обновляет отображение счетчика */
   private addToBasket(): void {
-    this.basketModel.addCardToBasket(this.dataModel.selectedСard);
-    this.basketView.renderHeaderBasketCounter(this.basketModel.getQuantity());
+    this.basketModel.addCardToBasket(this.dataModel.selectedCard);
+    this.updateBasketCounter(this.basketModel.getQuantity());
     this.modal.close();
+  }
+
+  /** Обновляет счетчик товаров в шапке */
+  private updateBasketCounter(count: number): void {
+    this.basketOpenButton.updateCounter(count);
   }
 
   /** открывает модальное окно корзины */
@@ -70,9 +78,7 @@ export class BasketPresenter {
   /** удаляет товар из корзины */
   private removeItem(item: ProductItem) {
     this.basketModel.deleteCardToBasket(item);
-    // обновляет счётчик товаров в шапке сайта
-    this.basketView.renderHeaderBasketCounter(this.basketModel.getQuantity());
-
+    this.events.emit('basket:change', {count: this.basketModel.getQuantity()});
     this.openBasket();
   }
 }

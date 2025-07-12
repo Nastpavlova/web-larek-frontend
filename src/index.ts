@@ -13,6 +13,7 @@ import { FormModel } from './components/Model/FormModel';
 
 // инициализация view
 import { Basket } from './components/View/Basket';
+import { BasketOpenButton } from './components/View/BasketOpenButton';
 import { ModalWindow } from './components/View/ModalWindow';
 import { Order } from './components/View/FormOrder';
 import { Contacts } from './components/View/FormContacts';
@@ -44,6 +45,7 @@ const formModel = new FormModel(events);
 
 // view
 const basket = new Basket(templates.basket, events);
+const basketOpenButton = new BasketOpenButton(events);
 const order = new Order(templates.order, events);
 const contacts = new Contacts(templates.contacts, events);
 
@@ -59,6 +61,7 @@ new ProductPresenter(
 new BasketPresenter(
   basketModel,
   basket,
+  basketOpenButton,
   modalWindow,
   dataModel,
   events,
@@ -81,7 +84,6 @@ new SuccessPresenter(
   modalWindow,
   events,
   templates.success,
-  basket
 );
 
 // обработчики модального окна
