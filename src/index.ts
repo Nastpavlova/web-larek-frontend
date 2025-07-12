@@ -17,12 +17,14 @@ import { BasketOpenButton } from './components/View/BasketOpenButton';
 import { ModalWindow } from './components/View/ModalWindow';
 import { Order } from './components/View/FormOrder';
 import { Contacts } from './components/View/FormContacts';
+import { MainPage } from './components/View/MainPage';
 
 // инициализация презентеров
 import { ProductPresenter } from './components/Presenter/ProductPresenter';
 import { BasketPresenter } from './components/Presenter/BasketPresenter';
 import { OrderPresenter } from './components/Presenter/OrderPresenter';
 import { SuccessPresenter } from './components/Presenter/SuccessPresenter';
+import { MainPagePresenter } from './components/Presenter/MainPagePresenter';
 
 // шаблоны
 const templates = {
@@ -38,6 +40,7 @@ const templates = {
 // инициализация компонентов
 const apiModel = new ApiModel(CDN_URL, API_URL);
 const events = new EventEmitter();
+const page = new MainPage(events);
 const dataModel = new DataModel(events);
 const modalWindow = new ModalWindow(ensureElement<HTMLElement>('#modal-container'), events);
 const basketModel = new BasketModel();
@@ -52,6 +55,12 @@ const order = new Order(templates.order, events);
 const contacts = new Contacts(templates.contacts, events);
 
 // презентеры
+new MainPagePresenter(
+  events, 
+  page, 
+  basketModel
+).initialize();
+
 new ProductPresenter(
   dataModel,
   modalWindow,
