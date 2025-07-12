@@ -38,13 +38,13 @@ export class BasketPresenter {
     });
   }
 
-    private updateBasket() {
-      this.updateBasketCounter(this.basketModel.getQuantity());
-      this.events.emit('basket:updated', {
-        count: this.basketModel.getQuantity(),
-        sum: this.basketModel.getSumAllProducts()
-      });
-    }
+  private updateBasket() {
+    this.updateBasketCounter(this.basketModel.getQuantity());
+    this.events.emit('basket:updated', {
+      count: this.basketModel.getQuantity(),
+      sum: this.basketModel.getSumAllProducts()
+    });
+  }
 
   /** Обновляет счетчик товаров в шапке */
   private updateBasketCounter(count: number): void {
@@ -53,45 +53,45 @@ export class BasketPresenter {
 
   /** открывает модальное окно корзины */
   private openBasket(): void {
-      this.updateBasketTotal();
-      this.renderBasketItems();
-      this.showBasketModal();
+    this.updateBasketTotal();
+    this.renderBasketItems();
+    this.showBasketModal();
   }
 
   /** обновляет отображение общей суммы в корзине */
   private updateBasketTotal(): void {
-      const sum = this.basketModel.getSumAllProducts();
-      this.basketView.renderSumAllProducts(sum);
+    const sum = this.basketModel.getSumAllProducts();
+    this.basketView.renderSumAllProducts(sum);
   }
 
   /** рендерит список товаров в корзине */
   private renderBasketItems(): void {
-      this.basketView.items = this.basketModel.basket.map((item, index) => 
-          this.createBasketItem(item, index + 1)
-      );
+    this.basketView.items = this.basketModel.basket.map((item, index) => 
+      this.createBasketItem(item, index + 1)
+    );
   }
 
   /** рендерит DOM-элемент для товара в корзине */
   private createBasketItem(item: ProductItem, index: number): HTMLElement {
-      const basketItem = new BasketItem(this.cardBasketTemplate, this.events, {
-          onClick: () => this.events.emit('basket:basketItemRemove', item)
-      });
-      return basketItem.render(item, index);
+    const basketItem = new BasketItem(this.cardBasketTemplate, this.events, {
+      onClick: () => this.events.emit('basket:basketItemRemove', item)
+    });
+    return basketItem.render(item, index);
   }
 
   /** показывает модальное окно корзины */
   private showBasketModal(): void {
-      this.modal.content = this.basketView.render();
-      this.modal.render();
+    this.modal.content = this.basketView.render();
+    this.modal.render();
   }
 
   /** удаляет товар из корзины */
   private removeItem(item: ProductItem) {
     this.basketModel.deleteCardToBasket(item);
     this.basketOpenButton.updateCounter(this.basketModel.getQuantity());
-    this.events.emit('basket:change', {
-        count: this.basketModel.getQuantity(),
-        sum: this.basketModel.getSumAllProducts()
+    this.events.emit('basket:changed', {
+      count: this.basketModel.getQuantity(),
+      sum: this.basketModel.getSumAllProducts()
     });
     this.openBasket();
   }
