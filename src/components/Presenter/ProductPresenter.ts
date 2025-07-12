@@ -37,8 +37,30 @@ export class ProductPresenter {
   /** выбор карточки, показывает модалку */
   private selectCard(item: ProductItem) {
     this.model.setPreview(item);
+
+    /** проверяет наличие товара в корзине */
+    const isInBasket = this.model.basketModel.isCardInBasket(item);
+
+    /** превью карточки*/
     const cardPreview = new CardPreview(this.cardPreviewTemplate, this.events);
-    this.modalWindow.content = cardPreview.render(item);
+    this.modalWindow.content = cardPreview.render(item, isInBasket);
+    
+    if (!isInBasket) {
+      const addedHandler = () => {
+        // закрываем модалку
+        this.modalWindow.close();
+        // удаляем обработчик
+        this.events.off('card:added', addedHandler);
+      };
+      // подписываемся на событие добавления
+      this.events.on('card:added', addedHandler);
+    } else {
+      const removedHandler = () => {
+        this.modalWindow.close();
+        this.events.off('card:removed', removedHandler);
+      };
+      this.events.on('card:removed', removedHandler);
+    }
     this.modalWindow.render();
   }
 }

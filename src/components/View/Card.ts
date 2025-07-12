@@ -3,7 +3,8 @@ import { IEvents } from "../base/events";
 
 /** интерфейс для карточки товара */
 export interface ICard {
-  render(data: ProductItem): HTMLElement;
+  render(data: ProductItem, isInBasket?: boolean): HTMLElement;
+  updateBasketState(isInBasket: boolean): void;
 }
 
 /** базовый класс карточки товара */
@@ -13,13 +14,14 @@ export class Card implements ICard {
   protected _cardTitle: HTMLElement;
   protected _cardImage: HTMLImageElement;
   protected _cardPrice: HTMLElement;
+  protected _data: ProductItem;
   protected _category = <Record<string, string>>{
     "дополнительное": "additional",
     "софт-скил": "soft",
     "кнопка": "button",
     "хард-скил": "hard",
     "другое": "other",
-  }
+  };
   
   constructor(template: HTMLTemplateElement, protected events: IEvents, actions?: IActions) {
     this._cardElement = template.content.querySelector('.card').cloneNode(true) as HTMLElement;
@@ -35,30 +37,52 @@ export class Card implements ICard {
 
   /** устанавливает текстовое содержимое элемента */
   protected setText(element: HTMLElement, value: unknown): void {
-    element.textContent = String(value);
+    if (element) {
+      element.textContent = String(value);
+    }
   }
 
   /** устанавливает категорию товара */
   set cardCategory(value: string) {
     this.setText(this._cardCategory, value);
-    this._cardCategory.className = `card__category card__category_${this._category[value]}`
+    if (this._cardCategory) {
+      this._cardCategory.className = `card__category card__category_${this._category[value]}`;
+    }
   }
   
   /** форматирует цену для отображения */
-  protected setPrice(value: number | null): string {
-    if (value === null) {
-      return 'Бесценно'
+  protected setPrice(value: number | null, isInBasket: boolean = false): string {
+    if (value === null || isInBasket) {
+      return 'Бесценно';
     }
-    return String(value) + ' синапсов'
+    return `${value} синапсов`;
+  }
+
+  /** обновляет состояние корзины */
+  updateBasketState(isInBasket: boolean): void {
+    if (this._cardPrice) {
+      this._cardPrice.textContent = this.setPrice(this._data?.price, isInBasket);
+    }
+    this._cardElement.classList.toggle('card_in-basket', isInBasket);
   }
 
   /** рендерит карточку товара */
-  render(data: ProductItem): HTMLElement {
+  render(data: ProductItem, isInBasket: boolean = false): HTMLElement {
+    this._data = data;
     this.cardCategory = data.category;
-    this._cardTitle.textContent = data.title;
-    this._cardImage.src = data.image;
-    this._cardImage.alt = data.title;
-    this._cardPrice.textContent = this.setPrice(data.price);
+    this.setText(this._cardTitle, data.title);
+    
+    if (this._cardImage) {
+      this._cardImage.src = data.image;
+      this._cardImage.alt = data.title;
+    }
+    
+    if (this._cardPrice) {
+      this._cardPrice.textContent = this.setPrice(data.price, isInBasket);
+    }
+    
+    this._cardElement.classList.toggle('card_in-basket', isInBasket);
+    
     return this._cardElement;
   }
 }

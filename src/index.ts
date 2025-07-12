@@ -43,6 +43,8 @@ const modalWindow = new ModalWindow(ensureElement<HTMLElement>('#modal-container
 const basketModel = new BasketModel();
 const formModel = new FormModel(events);
 
+dataModel.setBasketModel(basketModel);
+
 // view
 const basket = new Basket(templates.basket, events);
 const basketOpenButton = new BasketOpenButton(events);

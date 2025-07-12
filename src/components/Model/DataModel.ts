@@ -1,5 +1,6 @@
 import { ProductItem } from "../../types";
 import { IEvents } from "../base/events";
+import { BasketModel } from "./BasketModel";
 
 export interface IDataModel {
   productCards: ProductItem[];
@@ -15,11 +16,18 @@ export class DataModel implements IDataModel {
   /** выбранная карточка товара */
   selectedCard: ProductItem;
 
+  /** модель корзины */
+  basketModel: BasketModel;
+
   constructor(protected events: IEvents) {
     this._productCards = [];
   }
 
-  /** обновляет список карточек товаров и генерирует событие 'productCards:receive' */
+  setBasketModel(model: BasketModel) {
+    this.basketModel = model;
+  }
+
+  /** обновляет список карточек товаров */
   set productCards(data: ProductItem[]) {
     this._productCards = data;
     this.events.emit('productCards:receive');
@@ -28,6 +36,15 @@ export class DataModel implements IDataModel {
   /** возвращает список карточек товаров */
   get productCards() {
     return this._productCards;
+  }
+
+  /** проверяет, находится ли товар в корзине */
+  isInBasket(item: ProductItem): boolean {
+    if (this.basketModel) {
+      return this.basketModel.isCardInBasket(item);
+    } else {
+      return false;
+    }
   }
 
   /** устанавливает выбранную карточку товара для модалки */

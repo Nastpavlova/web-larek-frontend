@@ -8,6 +8,7 @@ export interface IBasketModel {
   addCardToBasket(data: ProductItem): void;
   deleteCardToBasket(item: ProductItem): void;
   clearBasket(): void
+  isCardInBasket(data: ProductItem): boolean;
 }
 
 export class BasketModel implements IBasketModel {
@@ -43,9 +44,16 @@ export class BasketModel implements IBasketModel {
     return sumAll;
   }
 
+  /** проверить, есть ли товар в корзине */
+  isCardInBasket(data: ProductItem): boolean {
+    return this._basket.some(basketItem => basketItem.id === data.id);
+  }
+
   /** добавить карточку товара в корзину */
   addCardToBasket(data: ProductItem) {
-    this._basket.push(data);
+    if (!this.isCardInBasket(data)) {
+      this._basket.push(data);
+    }
   }
 
   /** удалить карточку товара из корзины */
