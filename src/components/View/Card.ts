@@ -1,5 +1,6 @@
 import { IActions, ProductItem } from "../../types";
 import { IEvents } from "../base/events";
+import { formatPrice } from "../../utils/price";
 
 /** интерфейс для карточки товара */
 export interface ICard {
@@ -49,19 +50,11 @@ export class Card implements ICard {
       this._cardCategory.className = `card__category card__category_${this._category[value]}`;
     }
   }
-  
-  /** форматирует цену для отображения */
-  protected setPrice(value: number | null, isInBasket: boolean = false): string {
-    if (value === null || isInBasket) {
-      return 'Бесценно';
-    }
-    return `${value} синапсов`;
-  }
 
   /** обновляет состояние корзины */
   updateBasketState(isInBasket: boolean): void {
     if (this._cardPrice) {
-      this._cardPrice.textContent = this.setPrice(this._data?.price, isInBasket);
+      this._cardPrice.textContent = formatPrice(this._data?.price, isInBasket);
     }
     this._cardElement.classList.toggle('card_in-basket', isInBasket);
   }
@@ -78,7 +71,7 @@ export class Card implements ICard {
     }
     
     if (this._cardPrice) {
-      this._cardPrice.textContent = this.setPrice(data.price, isInBasket);
+      this._cardPrice.textContent = formatPrice(data.price, isInBasket);
     }
     
     this._cardElement.classList.toggle('card_in-basket', isInBasket);

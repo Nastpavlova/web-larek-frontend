@@ -1,6 +1,7 @@
 import { Card } from "./Card";
 import { IActions, ProductItem } from "../../types";
 import { IEvents } from "../base/events";
+import { formatPrice } from "../../utils/price";
 
 /** класс VIEW превью карточки товара */
 export class CardPreview extends Card {
@@ -34,7 +35,7 @@ export class CardPreview extends Card {
       : this.getButtonText(this._data);
     
     this._cardElement.classList.toggle('card_in-basket', isInBasket);
-    this._cardPrice.textContent = isInBasket ? 'Бесценно' : this.setPrice(this._data.price);
+    this._cardPrice.textContent = isInBasket ? 'Бесценно' : formatPrice(this._data.price);
   }
 
   /** текст для кнопки по наличию цены */
