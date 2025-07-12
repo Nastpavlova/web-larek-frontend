@@ -40,12 +40,6 @@ export class BasketPresenter {
     this.events.on<{count: number}>('basket:change', (data) => this.updateBasketCounter(data.count));
   }
 
-  /** добавляет выбранный товар в корзину и обновляет отображение счетчика */
-  private addToBasket(item: ProductItem): void {
-    this.basketModel.addCardToBasket(item);
-    this.updateBasketCounter(this.basketModel.getQuantity());
-  }
-
   /** Обновляет счетчик товаров в шапке */
   private updateBasketCounter(count: number): void {
     this.basketOpenButton.updateCounter(count);
@@ -85,13 +79,6 @@ export class BasketPresenter {
       this.modal.render();
   }
 
-  /** удаляет выбранный товар из корзины и обновляет отображение счетчика */
-  private removeFromBasket(item: ProductItem): void {
-    this.basketModel.deleteCardToBasket(item);
-    this.updateBasketCounter(this.basketModel.getQuantity());
-    this.modal.close();
-  }
-  
   /** удаляет товар из корзины */
   private removeItem(item: ProductItem) {
     this.basketModel.deleteCardToBasket(item);
