@@ -44,23 +44,16 @@ export class ProductPresenter {
     /** превью карточки*/
     const cardPreview = new CardPreview(this.cardPreviewTemplate, this.events);
     this.modalWindow.content = cardPreview.render(item, isInBasket);
+
+    // Закрытие модалки при успешном добавлении/удалении
+    const closeModalHandler = () => this.modalWindow.close();
     
     if (!isInBasket) {
-      const addedHandler = () => {
-        // закрываем модалку
-        this.modalWindow.close();
-        // удаляем обработчик
-        this.events.off('card:added', addedHandler);
-      };
-      // подписываемся на событие добавления
-      this.events.on('card:added', addedHandler);
+        this.events.once('card:addBasket', closeModalHandler); // закрыть после добавления
     } else {
-      const removedHandler = () => {
-        this.modalWindow.close();
-        this.events.off('card:removed', removedHandler);
-      };
-      this.events.on('card:removed', removedHandler);
+        this.events.once('card:removeBasket', closeModalHandler); // закрыть после удаления
     }
+    
     this.modalWindow.render();
   }
 }

@@ -26,13 +26,11 @@ export class BasketPresenter {
     this.events.on('card:addBasket', (item: ProductItem) => {
         this.basketModel.addCardToBasket(item);
         this.updateBasketCounter(this.basketModel.getQuantity());
-        this.events.emit('card:added', item);
     });
     
     this.events.on('card:removeBasket', (item: ProductItem) => {
         this.basketModel.deleteCardToBasket(item);
         this.updateBasketCounter(this.basketModel.getQuantity());
-        this.events.emit('card:removed', item);
     });
     
     this.events.on('basket:open', () => this.openBasket());
