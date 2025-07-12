@@ -32,8 +32,8 @@ export class Api {
         }).then(this.handleResponse);
     }
 
-    post(uri: string, data: object, method: ApiPostMethods = 'POST') {
-        return fetch(this.baseUrl + uri, {
+    post(url: string, data: object, method: ApiPostMethods = 'POST') {
+        return fetch(this.baseUrl + url, {
             ...this.options,
             method,
             body: JSON.stringify(data)
