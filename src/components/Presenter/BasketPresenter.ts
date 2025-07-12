@@ -23,20 +23,28 @@ export class BasketPresenter {
 
   /** подписывается на события */
   private subscribe() {
-    this.events.on('card:addBasket', (item: ProductItem) => {
-        this.basketModel.addCardToBasket(item);
-        this.updateBasketCounter(this.basketModel.getQuantity());
-    });
-    
-    this.events.on('card:removeBasket', (item: ProductItem) => {
-        this.basketModel.deleteCardToBasket(item);
-        this.updateBasketCounter(this.basketModel.getQuantity());
-    });
-    
     this.events.on('basket:open', () => this.openBasket());
     this.events.on('basket:basketItemRemove', (item: ProductItem) => this.removeItem(item));
-    this.events.on<{count: number}>('basket:change', (data) => this.updateBasketCounter(data.count));
+    this.events.on('basket:add', (item: ProductItem) => {
+      this.basketModel.addCardToBasket(item);
+      this.updateBasket();
+      this.events.emit('basket:changed', item);
+    });
+  
+    this.events.on('basket:remove', (item: ProductItem) => {
+      this.basketModel.deleteCardToBasket(item);
+      this.updateBasket();
+      this.events.emit('basket:changed', item);
+    });
   }
+
+    private updateBasket() {
+      this.updateBasketCounter(this.basketModel.getQuantity());
+      this.events.emit('basket:updated', {
+        count: this.basketModel.getQuantity(),
+        sum: this.basketModel.getSumAllProducts()
+      });
+    }
 
   /** Обновляет счетчик товаров в шапке */
   private updateBasketCounter(count: number): void {
@@ -80,7 +88,11 @@ export class BasketPresenter {
   /** удаляет товар из корзины */
   private removeItem(item: ProductItem) {
     this.basketModel.deleteCardToBasket(item);
-    this.events.emit('basket:change', {count: this.basketModel.getQuantity()});
+    this.basketOpenButton.updateCounter(this.basketModel.getQuantity());
+    this.events.emit('basket:change', {
+        count: this.basketModel.getQuantity(),
+        sum: this.basketModel.getSumAllProducts()
+    });
     this.openBasket();
   }
 }

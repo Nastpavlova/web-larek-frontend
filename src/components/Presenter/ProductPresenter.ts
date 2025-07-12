@@ -43,17 +43,12 @@ export class ProductPresenter {
 
     /** превью карточки*/
     const cardPreview = new CardPreview(this.cardPreviewTemplate, this.events);
-    this.modalWindow.content = cardPreview.render(item, isInBasket);
+    this.modalWindow.content = cardPreview.render(item, this.model.basketModel.isCardInBasket(item));
 
-    // Закрытие модалки при успешном добавлении/удалении
-    const closeModalHandler = () => this.modalWindow.close();
-    
-    if (!isInBasket) {
-        this.events.once('card:addBasket', closeModalHandler); // закрыть после добавления
-    } else {
-        this.events.once('card:removeBasket', closeModalHandler); // закрыть после удаления
-    }
-    
-    this.modalWindow.render();
+    this.events.once('basket:updated', () => {
+      this.modalWindow.close();
+    });
+  
+  this.modalWindow.render();
   }
 }

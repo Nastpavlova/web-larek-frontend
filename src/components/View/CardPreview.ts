@@ -18,14 +18,13 @@ export class CardPreview extends Card {
     super(template, events, actions);
     this.textElement = this._cardElement.querySelector('.card__text');
     this.buttonElement = this._cardElement.querySelector('.card__button') as HTMLButtonElement;
-    
     this.buttonElement.addEventListener('click', () => {
       if (this._cardElement.classList.contains('card_in-basket')) {
-        this.events.emit('card:removeBasket', this._data);
+        this.events.emit('basket:remove', this._data);
       } else {
-        this.events.emit('card:addBasket', this._data);
+        this.events.emit('basket:add', this._data);
       }
-    });
+    });    
   }
   
   /** обновляет состояние кнопки */

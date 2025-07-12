@@ -19,6 +19,14 @@ export class BasketOpenButton implements IBasketOpenButton {
     this.button.addEventListener('click', () => {
       this.events.emit('basket:open');
     });
+    
+    this.events.on('basket:updated', (data: {count: number}) => {
+      this.updateCounter(data.count);
+    });
+        
+    this.events.on('basket:change', (data: {count: number}) => {
+      this.updateCounter(data.count);
+    });
   }
 
   /** Обновляет счетчик товаров */
