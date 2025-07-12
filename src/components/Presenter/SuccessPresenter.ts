@@ -26,10 +26,13 @@ export class SuccessPresenter {
 
   /** отрывает модалку успешного оформления заказа */
   private openSuccess() {
-    this.apiModel.postOrderLot(this.formModel.getOrderLot())
+    const total = this.basketModel.getSumAllProducts();
+    const items = this.basketModel.basket.map(item => item.id);
+
+    this.apiModel.postOrderLot(this.formModel.getOrderLot(total, items))
       .then((data) => {
         const success = new Success(this.successTemplate, this.events);
-        this.modal.content = success.render(this.basketModel.getSumAllProducts());
+        this.modal.content = success.render(total);
         this.basketModel.clearBasket();
         this.events.emit('basket:change', {count: this.basketModel.getQuantity() });
         this.modal.render();

@@ -1,4 +1,4 @@
-/** форматирует цену для отображения */
+/** возвращает цену */
 export function formatPrice(value: number | null, isInBasket: boolean = false): string {
     if (value === null || isInBasket) {
       return 'Бесценно';

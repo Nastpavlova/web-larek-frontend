@@ -34,7 +34,6 @@ export class OrderPresenter {
   private openOrder() {
     this.modal.content = this.orderView.render();
     this.modal.render();
-    this.formModel.items = this.basketModel.basket.map(item => item.id);
   }
 
   /** устанавливает способ оплаты */
@@ -56,7 +55,6 @@ export class OrderPresenter {
 
   /** открывает форму ввода контактных данных */
   private openContacts() {
-    this.formModel.total = this.basketModel.getSumAllProducts();
     this.modal.content = this.contactsView.render();
     this.modal.render();
   }

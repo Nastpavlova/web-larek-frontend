@@ -7,13 +7,11 @@ export interface IFormModel {
   email: string;
   phone: string;
   address: string;
-  total: number;
-  items: string[];
   setOrderAddress(field: string, value: string): void
   validateOrder(): boolean;
   setOrderData(field: string, value: string): void
   validateContacts(): boolean;
-  getOrderLot(): object;
+  getOrderLot(total: number, items: string[]): object;
 }
 
 /** класс модели формы */
@@ -22,8 +20,6 @@ export class FormModel implements IFormModel {
   email: string;
   phone: string;
   address: string;
-  total: number;
-  items: string[];
   formErrors: FormErrors = {};
 
   constructor(protected events: IEvents) {
@@ -31,8 +27,6 @@ export class FormModel implements IFormModel {
     this.email = '';
     this.phone = '';
     this.address = '';
-    this.total = 0;
-    this.items = [];
   }
 
   /** устанавливает значение строки "address" */ 
@@ -42,7 +36,7 @@ export class FormModel implements IFormModel {
     }
 
     if (this.validateOrder()) {
-      this.events.emit('order:ready', this.getOrderLot());
+      this.events.emit('order:ready', this);
     }
   }
 
@@ -73,7 +67,7 @@ export class FormModel implements IFormModel {
     }
 
     if (this.validateContacts()) {
-      this.events.emit('order:ready', this.getOrderLot());
+      this.events.emit('order:ready', this);
     }
   }
 
@@ -105,14 +99,14 @@ export class FormModel implements IFormModel {
   }
 
   /** возвращает объект с данными заказа */
-  getOrderLot() {
+  getOrderLot(total: number, items: string[]) {
     return {
       payment: this.payment,
       email: this.email,
       phone: this.phone,
       address: this.address,
-      total: this.total,
-      items: this.items,
+      total,
+      items
     }
   }
 }
