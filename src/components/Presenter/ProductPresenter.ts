@@ -4,7 +4,7 @@ import { ModalWindow } from '../View/ModalWindow';
 import { Card } from '../View/Card';
 import { CardPreview } from '../View/CardPreview';
 import { ProductItem } from '../../types';
-import { ensureElement } from '../../utils/utils';
+import { MainPage } from '../View/MainPage';
 
 /** класс презентера отображения карточек товара*/
 export class ProductPresenter {
@@ -13,7 +13,8 @@ export class ProductPresenter {
     private modalWindow: ModalWindow,
     private events: EventEmitter,
     private cardCatalogTemplate: HTMLTemplateElement,
-    private cardPreviewTemplate: HTMLTemplateElement
+    private cardPreviewTemplate: HTMLTemplateElement,
+    private page: MainPage
   ) {
     this.subscribe();
   }
@@ -30,7 +31,7 @@ export class ProductPresenter {
       const card = new Card(this.cardCatalogTemplate, this.events, {
         onClick: () => this.events.emit('card:select', item)
       });
-      ensureElement<HTMLElement>('.gallery').append(card.render(item));
+      this.page.appendCard(card.render(item));
     });
   }
 
@@ -49,6 +50,6 @@ export class ProductPresenter {
       this.modalWindow.close();
     });
   
-  this.modalWindow.render();
+    this.modalWindow.render();
   }
 }

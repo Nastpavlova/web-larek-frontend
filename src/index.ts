@@ -45,6 +45,7 @@ const dataModel = new DataModel(events);
 const modalWindow = new ModalWindow(ensureElement<HTMLElement>('#modal-container'), events);
 const basketModel = new BasketModel();
 const formModel = new FormModel(events);
+const mainPage = new MainPage(events);
 
 dataModel.setBasketModel(basketModel);
 
@@ -55,9 +56,10 @@ const order = new Order(templates.order, events);
 const contacts = new Contacts(templates.contacts, events);
 
 // презентеры
+
 new MainPagePresenter(
   events, 
-  page, 
+  mainPage, 
   basketModel
 ).initialize();
 
@@ -66,7 +68,8 @@ new ProductPresenter(
   modalWindow,
   events,
   templates.cardCatalog,
-  templates.cardPreview
+  templates.cardPreview,
+  mainPage
 );
 
 new BasketPresenter(
